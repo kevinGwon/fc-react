@@ -43,6 +43,18 @@
       "react/jsx-filename-extension": 0
     }
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  },
   "browserslist": {
     "production": [
       ">0.2%",
