@@ -17,7 +17,31 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "airbnb",
+      "prettier"
+    ],
+    "rules": {
+      "semi": [
+        "error",
+        "always"
+      ],
+      "indent": [
+        "error",
+        2,
+        {
+          "SwitchCase": 1
+        }
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "no-unused-vars": 1,
+      "no-console": 0,
+      "react/jsx-filename-extension": 0
+    }
   },
   "browserslist": {
     "production": [
@@ -30,5 +54,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.9.0",
+    "husky": "^3.1.0",
+    "lint-staged": "^9.5.0"
   }
 }
