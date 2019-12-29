@@ -51,7 +51,7 @@
   "lint-staged": {
     "**/*.js": [
       "eslint --fix",
-      "npx prettier --write",
+      "prettier --write",
       "git add"
     ]
   },
@@ -71,6 +71,7 @@
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.9.0",
     "husky": "^3.1.0",
-    "lint-staged": "^9.5.0"
+    "lint-staged": "^9.5.0",
+    "prettier": "^1.19.1"
   }
 }

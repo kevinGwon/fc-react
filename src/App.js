@@ -2,9 +2,7 @@ import React from 'react';
 import Game from './components/Game';
 
 function App() {
-  const obj = {
-    test: 'test',
-  };
+  console.log('Husky test');
   return (
     <div className="App">
       <Game />
