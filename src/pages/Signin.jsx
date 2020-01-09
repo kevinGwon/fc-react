@@ -1,8 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
+import { Col, Row } from "antd";
+import SigninBg from "../components/SigninBg";
+import SigninForm from "../components/SigninForm";
+
 const Page = styled(Row).attrs(() => ({
-  type: 'flex',
-  align: 'middle'
+  type: "flex",
+  align: "middle"
 }))`
   height: 100vh;
 `;
@@ -30,7 +34,7 @@ const Underline = styled.div`
   background: linear-gradient(to right, #803b32, #ddb49b);
 `;
 const Contents = styled(Row).attrs(() => ({
-  type: 'flex'
+  type: "flex"
 }))`
   margin-top: 50px;
   background-color: #f3f7f8;
@@ -44,7 +48,7 @@ function Signin() {
       <Col span={24}>
         <Title>MARKTUBE REVIEW SERVICE FOR BOOKS</Title>
         <SubTitle>PLEASE SHARE YOUR OPINION ON WEB DEVELOPMENT BOOKS.</SubTitle>
-        <Underline></Underline>
+        <Underline />
         <Contents>
           <SigninBg />
           <SigninForm />
