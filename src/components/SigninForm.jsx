@@ -1,6 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import { Col, Input, Button } from "antd";
+import React, { useRef, useState } from 'react';
+import styled from 'styled-components';
+import { Col, Input, Button, message } from 'antd';
+import axios from 'axios';
+import { withRouter } from 'react-router-dom';
 
 const Box = styled.div`
   display: flex;
@@ -56,36 +58,61 @@ const Label = props => (
 
 const Link = props => {
   return (
-    <Button as="a" href={props.href}>
+    <Button as='a' href={props.href}>
       {props.children}
     </Button>
   );
 };
 
-function SigninFrom() {
+function SigninFrom({ history }) {
+  const emailInput = useRef();
+  const pwInput = useRef();
+  const [isLoading, setIsLoading] = useState(false);
+  const onGetInfo = async () => {
+    const email = emailInput.current.state.value;
+    const password = pwInput.current.state.value;
+
+    try {
+      setIsLoading(true);
+      const response = await axios.post('https://api.marktube.tv/v1/me', {
+        email,
+        password
+      });
+      setIsLoading(false);
+      console.log(response.data);
+      localStorage.setItem('token', response.data.token);
+      history.push('/');
+    } catch (error) {
+      setIsLoading(false);
+      message.error(error.response.data.error);
+    }
+  };
+
   return (
     <Col span={12}>
       <Box>
         <Title>LOG IN. START SEARCHING.</Title>
-        <form action="#">
+        <form action='#'>
           <InputGroup>
-            <Label type="email" id="email" />
-            <Input type="email" id="email" />
+            <Label type='email' id='email' />
+            <Input type='email' id='email' ref={emailInput} />
           </InputGroup>
           <InputGroup>
-            <Label type="password" id="password" />
-            <Input type="password" id="password" />
+            <Label type='password' id='password' />
+            <Input type='text' id='password' ref={pwInput} />
           </InputGroup>
-          <Btn htmlType="submit">Sign in</Btn>
+          <Btn htmlType='button' loading={isLoading} onClick={onGetInfo}>
+            Sign in
+          </Btn>
         </form>
         <LineBox>
           <LinkGroup>
             Need to create an account?
-            <Link href="/">Sign Up</Link>
+            <Link href='/'>Sign Up</Link>
           </LinkGroup>
           <LinkGroup>
             Forgot your password?
-            <Link href="/">RECOVERY</Link>
+            <Link href='/'>RECOVERY</Link>
           </LinkGroup>
         </LineBox>
       </Box>
@@ -93,4 +120,4 @@ function SigninFrom() {
   );
 }
 
-export default SigninFrom;
+export default withRouter(SigninFrom);
