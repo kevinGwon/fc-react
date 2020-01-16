@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react';
-import styled from 'styled-components';
-import { Col, Input, Button, message } from 'antd';
-import axios from 'axios';
-import { withRouter } from 'react-router-dom';
+import React, { useRef, useState } from "react";
+import styled from "styled-components";
+import { Col, Input, Button, message } from "antd";
+import axios from "axios";
+import { withRouter } from "react-router-dom";
 
 const Box = styled.div`
   display: flex;
@@ -58,7 +58,7 @@ const Label = props => (
 
 const Link = props => {
   return (
-    <Button as='a' href={props.href}>
+    <Button as="a" href={props.href}>
       {props.children}
     </Button>
   );
@@ -68,20 +68,35 @@ function SigninFrom({ history }) {
   const emailInput = useRef();
   const pwInput = useRef();
   const [isLoading, setIsLoading] = useState(false);
+  const [token, setToken] = useState(localStorage.getItem("token"));
+
+  function onLogout() {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      localStorage.removeItem("token");
+      setToken(localStorage.getItem("token"));
+      history.push("/");
+    }, 1000);
+  }
+
   const onGetInfo = async () => {
     const email = emailInput.current.state.value;
     const password = pwInput.current.state.value;
 
     try {
       setIsLoading(true);
-      const response = await axios.post('https://api.marktube.tv/v1/me', {
+      const response = await axios.post("https://api.marktube.tv/v1/me", {
         email,
         password
       });
-      setIsLoading(false);
-      console.log(response.data);
-      localStorage.setItem('token', response.data.token);
-      history.push('/');
+      setTimeout(() => {
+        setIsLoading(false);
+        // console.log(response);
+        localStorage.setItem("token", response.data.token);
+        setToken(response.data.token);
+        history.push("/");
+      }, 1000);
     } catch (error) {
       setIsLoading(false);
       message.error(error.response.data.error);
@@ -92,29 +107,45 @@ function SigninFrom({ history }) {
     <Col span={12}>
       <Box>
         <Title>LOG IN. START SEARCHING.</Title>
-        <form action='#'>
-          <InputGroup>
-            <Label type='email' id='email' />
-            <Input type='email' id='email' ref={emailInput} />
-          </InputGroup>
-          <InputGroup>
-            <Label type='password' id='password' />
-            <Input type='text' id='password' ref={pwInput} />
-          </InputGroup>
-          <Btn htmlType='button' loading={isLoading} onClick={onGetInfo}>
-            Sign in
-          </Btn>
-        </form>
-        <LineBox>
-          <LinkGroup>
-            Need to create an account?
-            <Link href='/'>Sign Up</Link>
-          </LinkGroup>
-          <LinkGroup>
-            Forgot your password?
-            <Link href='/'>RECOVERY</Link>
-          </LinkGroup>
-        </LineBox>
+        {!token ? (
+          <>
+            <form action="#">
+              <InputGroup>
+                <Label type="email" id="email" />
+                <Input type="email" id="email" ref={emailInput} />
+              </InputGroup>
+              <InputGroup>
+                <Label type="password" id="password" />
+                <Input
+                  type="text"
+                  id="password"
+                  ref={pwInput}
+                  autoomplete="password"
+                />
+              </InputGroup>
+              <Btn htmlType="button" loading={isLoading} onClick={onGetInfo}>
+                Sign in
+              </Btn>
+            </form>
+            <LineBox>
+              <LinkGroup>
+                Need to create an account?
+                <Link href="/">Sign Up</Link>
+              </LinkGroup>
+              <LinkGroup>
+                Forgot your password?
+                <Link href="/">RECOVERY</Link>
+              </LinkGroup>
+            </LineBox>
+          </>
+        ) : (
+          <>
+            <div>반값습니다 회원님</div>
+            <Btn htmlType="button" loading={isLoading} onClick={onLogout}>
+              Logout
+            </Btn>
+          </>
+        )}
       </Box>
     </Col>
   );
