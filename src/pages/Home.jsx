@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { withRouter } from "react-router-dom";
-import { Row, Col, Input, Button } from "antd";
+import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import { Row, Col, Input, Button } from 'antd';
+import { connect } from 'react-redux';
+import { addBooks } from '../actions';
 
 const Header = styled.header`
   display: flex;
@@ -28,8 +30,8 @@ const MarginTop = styled.div`
   margin-top: 5rem;
 `;
 
-function Home() {
-  const [token, setToken] = useState(localStorage.getItem("token"));
+function Home({ addBooks }) {
+  const [token, setToken] = useState(localStorage.getItem('token'));
   const [isLoading, setIsLoading] = useState(false);
   const [book, setBook] = useState([]);
   const [user, setUser] = useState({});
@@ -39,17 +41,17 @@ function Home() {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      setToken(localStorage.removeItem("token"));
+      setToken(localStorage.removeItem('token'));
     }, 1000);
   }
 
   const onAddBook = async e => {
     try {
-      const res = await axios.post("https://api.marktube.tv/v1/book", {
+      const res = await axios.post('https://api.marktube.tv/v1/book', {
         headers: {
           Authorization: `Bearer ${token}`
         },
-        data: ["test"]
+        data: ['test']
       });
       console.log(res);
     } catch (error) {
@@ -61,16 +63,17 @@ function Home() {
   useEffect(() => {
     // user
     axios
-      .get("https://api.marktube.tv/v1/me", {
+      .get('https://api.marktube.tv/v1/me', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
       .then(res => {
-        setUser({
-          name: res.data.name,
-          email: res.data.email
-        });
+        // setUser({
+        //   name: res.data.name,
+        //   email: res.data.email
+        // });
+        addBooks(res.data);
         console.log(res.data);
       })
       .catch(error => {
@@ -79,7 +82,7 @@ function Home() {
 
     // book
     axios
-      .get("https://api.marktube.tv/v1/book", {
+      .get('https://api.marktube.tv/v1/book', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -97,7 +100,7 @@ function Home() {
     <>
       {!token ? (
         <Page>
-          <Link to="/Signin">로그인 페이지로 이동</Link>
+          <Link to='/Signin'>로그인 페이지로 이동</Link>
         </Page>
       ) : (
         <>
@@ -106,19 +109,19 @@ function Home() {
               <div>
                 {user.name}({user.email}) 회원님은 로그인 중입니다.
               </div>
-              <Button htmlType="button" loading={isLoading} onClick={onLogout}>
+              <Button htmlType='button' loading={isLoading} onClick={onLogout}>
                 Logout
               </Button>
             </MarginTop>
           </Header>
           <Page>
             <MarginTop>
-              <form action="#">
-                <Row span="6">
+              <form action='#'>
+                <Row span='6'>
                   <Col span={20}>
                     <Input
-                      type="text"
-                      placeholder="제목을 입력하세요"
+                      type='text'
+                      placeholder='제목을 입력하세요'
                       ref={$bookInput}
                     />
                   </Col>
@@ -144,4 +147,14 @@ function Home() {
   );
 }
 
-export default withRouter(Home);
+const a = state => ({
+  books: state.books
+});
+
+const b = dispatch => ({
+  addBooks: books => {
+    dispatch(addBooks(books));
+  }
+});
+
+export default connect(a, b)(withRouter(Home));
