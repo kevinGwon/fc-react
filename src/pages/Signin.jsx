@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Col, Row } from "antd";
 import SigninBg from "../components/SigninBg";
@@ -43,6 +44,8 @@ const Contents = styled(Row).attrs(() => ({
   width: 800px;
 `;
 function Signin() {
+  const store = useSelector(store => store.books);
+  console.log(store);
   return (
     <Page>
       <Col span={24}>
